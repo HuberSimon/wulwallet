@@ -9,19 +9,16 @@ import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface IdeaDao {
+interface CostsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertIdea(idea: Idea)
+    suspend fun insertCosts(costs: Costs)
 
     @Update
-    suspend fun updateIdea(idea: Idea)
+    suspend fun updateCosts(costs: Costs)
 
     @Delete
-    suspend fun deleteIdea(idea: Idea)
+    suspend fun deleteCosts(costs: Costs)
 
-    @Query("SELECT * FROM ideas WHERE userId = :userId ORDER BY id DESC")
-    suspend fun getIdeasByUser(userId: Int): List<Idea>
-
-    @Query("SELECT * FROM ideas ORDER BY id DESC")
-    fun getAllIdeas(): Flow<List<Idea>>
+    @Query("SELECT * FROM costs WHERE categoryId = :categoryId ORDER BY id DESC")
+    suspend fun getCostsByCategory(categoryId: Int): List<Costs>
 }

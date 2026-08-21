@@ -1,7 +1,7 @@
-package com.example.wulidee.data
+package com.example.wulwallet.data
 
-import com.example.wulidee.data.local.UserDao
-import com.example.wulidee.data.local.User
+import com.example.wulwallet.data.local.UserDao
+import com.example.wulwallet.data.local.User
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 
@@ -12,7 +12,7 @@ class UserRepository(private val userDao: UserDao) {
     suspend fun initializeUser() {
         val user = userDao.getUser().firstOrNull()
         if (user == null) {
-            val newUser = User(name = "", pinEncrypted = 0, pinLock = false, reminderEnabled = false)
+            val newUser = User(name = "")
             userDao.insertUser(newUser)
         }
     }

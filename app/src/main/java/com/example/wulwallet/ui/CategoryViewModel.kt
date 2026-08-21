@@ -2,56 +2,51 @@ package com.example.wulwallet.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.wulwallet.data.PersonRepository
-import com.example.wulwallet.data.local.Person
+import com.example.wulwallet.data.CategoryRepository
+import com.example.wulwallet.data.local.Category
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class PersonViewModel(
-    private val repository: PersonRepository,
+class CategoryViewModel(
+    private val repository: CategoryRepository,
 ) : ViewModel() {
 
-    private val _selectedPerson = MutableStateFlow<Person?>(null)
-    val selectedPerson: StateFlow<Person?> = _selectedPerson
+    private val _selectedCategory = MutableStateFlow<Category?>(null)
+    val selectedCategory: StateFlow<Category?> = _selectedCategory
 
-    val allPersons: StateFlow<List<Person>> = repository.allPersons
+    val allCategories: StateFlow<List<Category>> = repository.allCategories
         .stateIn(
             viewModelScope,
             SharingStarted.Lazily,
             emptyList()
         )
 
-    val personCount = repository.personCount.stateIn(
-        viewModelScope,
-        SharingStarted.Lazily,
-        0
-    )
 
-    fun addPerson(person: Person) {
+    fun addCategory(category: Category) {
         viewModelScope.launch {
-            repository.insertPerson(person)
+            repository.insertCategory(category)
         }
     }
 
-    fun updatePerson(person: Person) {
+    fun updateCategory(category: Category) {
         viewModelScope.launch {
-            repository.updatePerson(person)
+            repository.updateCategory(category)
         }
     }
 
-    fun deletePerson(person: Person) {
+    fun deleteCategory(category: Category) {
         viewModelScope.launch {
-            repository.deletePerson(person)
+            repository.deleteCategory(category)
         }
     }
 
-    fun getPersonById(id: Int) {
+    fun getCategoryById(id: Int) {
         viewModelScope.launch {
-            val person = repository.getPersonById(id)
-            _selectedPerson.value = person
+            val category = repository.getCategoryById(id)
+            _selectedCategory.value = category
         }
     }
 }

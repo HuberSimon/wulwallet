@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "wulidee"
+rootProject.name = "wulwallet"
 include(":app")

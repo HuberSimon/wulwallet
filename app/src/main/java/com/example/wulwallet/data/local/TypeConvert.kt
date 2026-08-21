@@ -1,4 +1,4 @@
-package com.example.wulidee.data.local
+package com.example.wulwallet.data.local
 
 import androidx.room.TypeConverter
 import java.util.*

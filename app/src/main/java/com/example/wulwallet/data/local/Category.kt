@@ -3,10 +3,10 @@ package com.example.wulwallet.data.local
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "persons")
-data class Person(
+@Entity(tableName = "category")
+data class Category(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val name: String,
-    val pin: String,
-    val pinLock: Boolean
+    val totalSum: Float,
+    val plannedSum: Float
 )

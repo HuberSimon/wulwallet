@@ -1,28 +1,26 @@
 package com.example.wulwallet.data
 
-import com.example.wulwallet.data.local.Person
-import com.example.wulwallet.data.local.PersonDao
+import com.example.wulwallet.data.local.Category
+import com.example.wulwallet.data.local.CategoryDao
 import kotlinx.coroutines.flow.Flow
 
-class PersonRepository(private val personDao: PersonDao) {
+class CategoryRepository(private val categoryDao: CategoryDao) {
 
-    val allPersons: Flow<List<Person>> = personDao.getAllPersons()
+    val allCategories: Flow<List<Category>> = categoryDao.getAllCategories()
 
-    val personCount: Flow<Int> = personDao.getPersonCount()
-
-    suspend fun insertPerson(person: Person) {
-        personDao.insertPerson(person)
+    suspend fun insertCategory(category: Category) {
+        categoryDao.insertCategory(category)
     }
 
-    suspend fun updatePerson(person: Person) {
-        personDao.updatePerson(person)
+    suspend fun updateCategory(category: Category) {
+        categoryDao.updateCategory(category)
     }
 
-    suspend fun deletePerson(person: Person) {
-        personDao.deletePerson(person)
+    suspend fun deleteCategory(category: Category) {
+        categoryDao.deleteCategory(category)
     }
 
-    suspend fun getPersonById(id: Int): Person? {
-        return personDao.getPersonById(id)
+    suspend fun getCategoryById(id: Int): Category? {
+        return categoryDao.getCategoryById(id)
     }
 }

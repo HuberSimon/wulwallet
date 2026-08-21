@@ -1,4 +1,4 @@
-package com.example.wulidee.ui.theme
+package com.example.wulwallet.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
