@@ -2,48 +2,41 @@ package com.example.wulwallet.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.wulwallet.data.IdeaRepository
-import com.example.wulwallet.data.local.Idea
+import com.example.wulwallet.data.CostsRepository
+import com.example.wulwallet.data.local.Costs
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class IdeaViewModel(private val repository: IdeaRepository) : ViewModel() {
+class CostsViewModel(private val repository: CostsRepository) : ViewModel() {
 
-    private val _userIdeas = MutableStateFlow<List<Idea>>(emptyList())
-    val userIdeas: StateFlow<List<Idea>> = _userIdeas
+    private val _categoryCosts = MutableStateFlow<List<Costs>>(emptyList())
+    val categoryCosts: StateFlow<List<Costs>> = _categoryCosts
 
-    fun allIdeasByUser(userId: Int) {
+    fun allCostsByCategory(categoryId: Int) {
         viewModelScope.launch {
-            val ideas = repository.getAllIdeasByUser(userId)
-            _userIdeas.value = ideas
+            val costs = repository.getAllCostsByCategoryId(categoryId)
+            _categoryCosts.value = costs
         }
     }
 
-    val allIdeas: StateFlow<List<Idea>> = repository.allIdeas
-        .stateIn(
-            viewModelScope,
-            SharingStarted.Lazily,
-            emptyList()
-        )
-
-    fun addIdea(idea: Idea) {
+    fun addCosts(costs: Costs) {
         viewModelScope.launch {
-            repository.insertIdea(idea)
+            repository.insertCosts(costs)
         }
     }
 
-    fun updateIdea(idea: Idea) {
+    fun updateCosts(costs: Costs) {
         viewModelScope.launch {
-            repository.updateIdea(idea)
+            repository.updateCosts(costs)
         }
     }
 
-    fun deleteIdea(idea: Idea) {
+    fun deleteCosts(costs: Costs) {
         viewModelScope.launch {
-            repository.deleteIdea(idea)
+            repository.deleteCosts(costs)
         }
     }
 }

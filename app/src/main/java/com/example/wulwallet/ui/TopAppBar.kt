@@ -21,7 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.wulidee.data.local.User
+import com.example.wulwallet.data.local.User
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -32,10 +32,8 @@ fun CustomTopAppBarWithTabs(
     coroutineScope: CoroutineScope,
     navController: NavController
 ) {
-    var titles = listOf("Lieblingsmenschen","Benutzer")
-    if (user?.reminderEnabled == true){
-        titles = listOf("Lieblingsmenschen", "Erinnerung", "Benutzer")
-    }
+    var titles = listOf("WulWallet","BudgetPlan","ToDo's","Benutzer")
+
     Column {
         Row(
             modifier = Modifier

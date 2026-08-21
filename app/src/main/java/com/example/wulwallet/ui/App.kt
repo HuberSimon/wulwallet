@@ -1,4 +1,4 @@
-package com.example.wulidee.ui
+package com.example.wulwallet.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,13 +21,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.wulidee.data.local.User
+import com.example.wulwallet.data.local.User
 
 @Composable
-fun App(userViewModel: UserViewModel, personViewModel: PersonViewModel, ideaViewModel: IdeaViewModel, reminderViewModel: ReminderViewModel) {
+fun App(userViewModel: UserViewModel, categoryViewModel: CategoryViewModel, costsViewModel: CostsViewModel, todoViewModel: TodoViewModel) {
     val isInitialized by userViewModel.isInitialized.collectAsState()
-    val isPinCorrect = remember { mutableStateOf(false) }
 
     if (!isInitialized) {
         LoadingScreen()
@@ -37,14 +37,7 @@ fun App(userViewModel: UserViewModel, personViewModel: PersonViewModel, ideaView
         if (user == null || user.name.isEmpty()) {
             userAdd(userViewModel)
         } else {
-            if (user.pinLock && user.pinEncrypted != 0 && !isPinCorrect.value) {
-                PinLockScreen(
-                    password = user.pinEncrypted,
-                    onPinSuccess = { isPinCorrect.value = true }
-                )
-            } else {
-                NavGraph(userViewModel, personViewModel, ideaViewModel, reminderViewModel)
-            }
+                NavGraph(userViewModel, categoryViewModel, costsViewModel, todoViewModel)
         }
     }
 }
@@ -87,7 +80,7 @@ fun userAdd(userViewModel: UserViewModel) {
             NameInputDialog(
                 onDismiss = { showDialog = false },
                 onConfirm = { enteredName ->
-                    userViewModel.updateUser(User(id = user!!.id, name = enteredName, pinEncrypted = 0, pinLock = false, reminderEnabled = false))
+                    userViewModel.updateUser(User(id = user!!.id, name = enteredName))
                     showDialog = false
                 }
             )
@@ -114,7 +107,7 @@ fun NameInputDialog(
         },
         confirmButton = {
             Button(onClick = { onConfirm(name) }) {
-                Text("OK")
+                Text(text = "OK", color = Color.White)
             }
         }
     )

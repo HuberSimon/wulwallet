@@ -1,4 +1,4 @@
-package com.example.wulidee.data.local
+package com.example.wulwallet.data.local
 
 import android.content.Context
 import androidx.room.Database
@@ -6,13 +6,13 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
-@Database(entities = [User::class, Person::class, Idea::class, Reminder::class], version = 1, exportSchema = false)
+@Database(entities = [User::class, Category::class, Costs::class, Todo::class], version = 1, exportSchema = false)
 @TypeConverters(TypeConvert::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
-    abstract fun personDao(): PersonDao
-    abstract fun ideaDao(): IdeaDao
-    abstract fun reminderDao(): ReminderDao
+    abstract fun categoryDao(): CategoryDao
+    abstract fun costsDao(): CostsDao
+    abstract fun todoDao(): TodoDao
     companion object {
         @Volatile
         private var INSTANCE: AppDatabase? = null

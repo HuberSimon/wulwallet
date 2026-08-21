@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.wulidee"
+    namespace = "com.example.wulwallet"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.wulidee"
+        applicationId = "com.example.wulwallet"
         minSdk = 24
         targetSdk = 34
         versionCode = 1

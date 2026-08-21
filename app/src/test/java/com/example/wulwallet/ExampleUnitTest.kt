@@ -1,4 +1,4 @@
-package com.example.wulidee
+package com.example.wulwallet
 
 import org.junit.Test
 
