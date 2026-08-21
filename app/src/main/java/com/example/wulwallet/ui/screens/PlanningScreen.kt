@@ -1,9 +1,6 @@
-package com.example.wulidee.ui.screens
+package com.example.wulwallet.ui.screens
 
-import android.app.DatePickerDialog
 import android.os.Build
-import android.widget.ArrayAdapter
-import android.widget.Spinner
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -12,7 +9,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,20 +16,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.example.wulidee.data.local.Reminder
-import com.example.wulidee.data.local.Person
-import com.example.wulidee.ui.PersonViewModel
-import com.example.wulidee.ui.ReminderViewModel
+import com.example.wulwallet.data.local.Reminder
+import com.example.wulwallet.data.local.Category
+import com.example.wulwallet.ui.CategoryViewModel
+import com.example.wulwallet.ui.ReminderViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
-fun ReminderScreen(personViewModel: PersonViewModel, reminderViewModel: ReminderViewModel) {
-    val allPersons by personViewModel.allPersons.collectAsState(initial = emptyList())
+fun ReminderScreen(categoryViewModel: CategoryViewModel, reminderViewModel: ReminderViewModel) {
+    val allCategories by categoryViewModel.allCategories.collectAsState(initial = emptyList())
     var showDialog by remember { mutableStateOf(false) }
     val reminderCount by reminderViewModel.reminderCount.collectAsState(initial = 0)
 
@@ -54,9 +49,9 @@ fun ReminderScreen(personViewModel: PersonViewModel, reminderViewModel: Reminder
 
             item { Spacer(modifier = Modifier.height(25.dp)) }
 
-            items(allPersons) { person ->
+            items(allCategories) { category ->
                 ReminderList(
-                    person = person,
+                    category = category,
                     reminderViewModel
                 )
             }
@@ -75,7 +70,7 @@ fun ReminderScreen(personViewModel: PersonViewModel, reminderViewModel: Reminder
 
     if (showDialog) {
         AddReminderDialog(
-            allPersons = allPersons,
+            allCategories = allCategories,
             onDismiss = { showDialog = false },
             reminderViewModel = reminderViewModel
         )
@@ -84,11 +79,11 @@ fun ReminderScreen(personViewModel: PersonViewModel, reminderViewModel: Reminder
 
 @Composable
 fun ReminderList(
-    person: Person,
+    category: Category,
     reminderViewModel: ReminderViewModel
 ) {
     var reminders by remember { mutableStateOf<List<Reminder>>(emptyList()) }
-    reminderViewModel.getRemindersForUser(person.id) { fetchedReminders ->
+    reminderViewModel.getRemindersForUser(category.id) { fetchedReminders ->
         reminders = fetchedReminders
     }
     if(reminders.isNotEmpty()) {
@@ -104,7 +99,7 @@ fun ReminderList(
                     .padding(16.dp)
             ) {
                 Text(
-                    text = person.name,
+                    text = category.name,
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(top = 16.dp)
                 )
@@ -172,11 +167,11 @@ fun getDaysUntil(date: Date): Long {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddReminderDialog(
-    allPersons: List<Person>,
+    allCategories: List<Category>,
     reminderViewModel: ReminderViewModel,
     onDismiss: () -> Unit,
 ) {
-    var selectedPerson by remember { mutableStateOf<Person?>(null) }
+    var selectedCategory by remember { mutableStateOf<Category?>(null) }
     var date by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     var expanded by remember { mutableStateOf(false) }
@@ -200,18 +195,18 @@ fun AddReminderDialog(
                 ) {
                     TextField(
                         modifier = Modifier.menuAnchor(),
-                        value = selectedPerson?.name ?: "",
+                        value = selectedCategory?.name ?: "",
                         onValueChange = {},
                         readOnly = true,
                         label = { Text("Benutzer wählen") },
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) }
                     )
                     ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                        for(person in allPersons){
+                        for(person in allCategories){
                             DropdownMenuItem(
                                 text = { Text(text = person.name) },
                                 onClick = {
-                                    selectedPerson = person
+                                    selectedCategory = person
                                     expanded = false
                                 },
                                 contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
@@ -254,7 +249,7 @@ fun AddReminderDialog(
                     }
                     Button(
                         onClick = {
-                            if (selectedPerson == null) {
+                            if (selectedCategory == null) {
                                 Toast.makeText(context, "Bitte einen Benutzer auswählen!", Toast.LENGTH_SHORT).show()
                                 return@Button
                             }
@@ -281,7 +276,7 @@ fun AddReminderDialog(
                             }
 
                             reminderViewModel.addReminder(
-                                userId = selectedPerson!!.id,
+                                userId = selectedCategory!!.id,
                                 importantDate = parsedDate,
                                 description = description
                             )

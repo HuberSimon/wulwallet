@@ -1,12 +1,9 @@
-package com.example.wulidee.ui
+package com.example.wulwallet.ui
 
-import androidx.compose.runtime.Recomposer
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.wulidee.data.IdeaRepository
-import com.example.wulidee.data.local.Idea
-import com.example.wulidee.data.local.Person
+import com.example.wulwallet.data.IdeaRepository
+import com.example.wulwallet.data.local.Idea
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow

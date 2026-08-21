@@ -1,9 +1,8 @@
-package com.example.wulidee.data
+package com.example.wulwallet.data
 
-import com.example.wulidee.data.local.Person
-import com.example.wulidee.data.local.PersonDao
+import com.example.wulwallet.data.local.Person
+import com.example.wulwallet.data.local.PersonDao
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 
 class PersonRepository(private val personDao: PersonDao) {
 

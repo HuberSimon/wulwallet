@@ -1,8 +1,8 @@
-package com.example.wulidee.data
+package com.example.wulwallet.data
 
 
-import com.example.wulidee.data.local.Idea
-import com.example.wulidee.data.local.IdeaDao
+import com.example.wulwallet.data.local.Idea
+import com.example.wulwallet.data.local.IdeaDao
 import kotlinx.coroutines.flow.Flow
 
 

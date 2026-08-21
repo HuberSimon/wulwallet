@@ -1,10 +1,9 @@
-package com.example.wulidee.ui
+package com.example.wulwallet.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.wulidee.data.PersonRepository
-import com.example.wulidee.data.local.Person
-import kotlinx.coroutines.Dispatchers
+import com.example.wulwallet.data.PersonRepository
+import com.example.wulwallet.data.local.Person
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow

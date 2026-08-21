@@ -1,4 +1,4 @@
-package com.example.wulidee.ui.screens
+package com.example.wulwallet.ui.screens
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -44,14 +44,13 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.example.wulidee.data.local.Idea
-import com.example.wulidee.data.local.Person
-import com.example.wulidee.ui.IdeaViewModel
-import com.example.wulidee.ui.PersonViewModel
+import com.example.wulwallet.data.local.Idea
+import com.example.wulwallet.ui.IdeaViewModel
+import com.example.wulwallet.ui.CategoryViewModel
 
 @Composable
-fun IdeaScreen(personViewModel: PersonViewModel, ideaViewModel: IdeaViewModel, selectedUserId: Int) {
-    val selectedPerson by personViewModel.selectedPerson.collectAsState()
+fun IdeaScreen(categoryViewModel: CategoryViewModel, ideaViewModel: IdeaViewModel, selectedUserId: Int) {
+    val selectedCategory by categoryViewModel.selectedCategory.collectAsState()
     val ideas by ideaViewModel.userIdeas.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
     var showEditDialog by remember { mutableStateOf(false) }
@@ -59,7 +58,7 @@ fun IdeaScreen(personViewModel: PersonViewModel, ideaViewModel: IdeaViewModel, s
     var refreshKey by remember { mutableStateOf(0) }
 
     LaunchedEffect(refreshKey) {
-        personViewModel.getPersonById(selectedUserId)
+        categoryViewModel.getCategoryById(selectedUserId)
         ideaViewModel.allIdeasByUser(selectedUserId)
     }
 
@@ -71,7 +70,7 @@ fun IdeaScreen(personViewModel: PersonViewModel, ideaViewModel: IdeaViewModel, s
         ) {
             item { Spacer(modifier = Modifier.height(25.dp)) }
             item {
-                Text(text = "Geschenkideen für ${selectedPerson?.name}", style = MaterialTheme.typography.titleLarge)
+                Text(text = "Geschenkideen für ${selectedCategory?.name}", style = MaterialTheme.typography.titleLarge)
             }
 
             item { Spacer(modifier = Modifier.height(25.dp)) }
