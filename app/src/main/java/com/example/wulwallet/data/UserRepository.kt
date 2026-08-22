@@ -12,7 +12,7 @@ class UserRepository(private val userDao: UserDao) {
     suspend fun initializeUser() {
         val user = userDao.getUser().firstOrNull()
         if (user == null) {
-            val newUser = User(name = "")
+            val newUser = User(name = "", totalCosts = 0.0f, mainUser = false)
             userDao.insertUser(newUser)
         }
     }

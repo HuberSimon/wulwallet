@@ -17,5 +17,8 @@ interface UserDao {
 
     @Query("SELECT * FROM users ORDER BY id DESC LIMIT 1")
     fun getUser(): Flow<User>
+
+    @Query("SELECT * FROM users WHERE mainUser==true")
+    fun getMainUser(): Flow<User>
 }
 
