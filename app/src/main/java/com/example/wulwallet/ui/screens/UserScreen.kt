@@ -1,231 +1,658 @@
+// ================================================================
+// FILE: ui/screens/UserScreen.kt
+// ================================================================
+
 package com.example.wulwallet.ui.screens
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.example.wulwallet.data.local.User
+import com.example.wulwallet.ui.CostsViewModel
 import com.example.wulwallet.ui.UserViewModel
+import java.util.Locale
 
-private val SettingsGreen = Color(0xFF4CAF50)
-private val SettingsGreenDark = Color(0xFF388E3C)
-private val SettingsLightGray = Color(0xFFF3F4F6)
-private val SettingsTextGray = Color(0xFF6B7280)
+private val Green = Color(0xFF43A047)
+private val GreenDark = Color(0xFF2E7D32)
 
 @Composable
 fun UserScreen(
-    userViewModel: UserViewModel
+    userViewModel: UserViewModel,
+    costsViewModel: CostsViewModel
 ) {
-    val user by userViewModel.user.collectAsState(initial = null)
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp)
+    // ============================================================
+    // USERS
+    // ============================================================
+
+    val users by
+    userViewModel
+        .allUsers
+        .collectAsState()
+
+
+    // ============================================================
+    // TATSÄCHLICHE REISEKOSTEN PRO USER
+    // ============================================================
+
+    val userTravelCosts by
+    costsViewModel
+        .userTravelCosts
+        .collectAsState()
+
+
+    // ============================================================
+    // ADD DIALOG
+    // ============================================================
+
+    var showDialog by remember {
+        mutableStateOf(false)
+    }
+
+
+    // ============================================================
+    // DELETE DIALOG
+    // ============================================================
+
+    var userToDelete by remember {
+        mutableStateOf<User?>(null)
+    }
+
+
+    // ============================================================
+    // KOSTEN LADEN
+    // ============================================================
+
+    LaunchedEffect(Unit) {
+
+        costsViewModel.loadAllCosts()
+    }
+
+
+    // ============================================================
+    // GESAMTKOSTEN DER REISE
+    // ============================================================
+
+    val total =
+        userTravelCosts
+            .values
+            .sum()
+
+
+    // ============================================================
+    // SCREEN
+    // ============================================================
+
+    LazyColumn(
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(
+                    horizontal = 16.dp
+                ),
+
+        verticalArrangement =
+            Arrangement.spacedBy(
+                12.dp
+            )
     ) {
 
-        Spacer(modifier = Modifier.height(16.dp))
+        // ========================================================
+        // HEADER
+        // ========================================================
 
-        // Header
-        Text(
-            text = "Einstellungen",
-            style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.Bold
-        )
+        item {
 
-        Spacer(modifier = Modifier.height(4.dp))
-
-        Text(
-            text = "Verwalte deine persönlichen Einstellungen.",
-            style = MaterialTheme.typography.bodyMedium,
-            color = SettingsTextGray
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        // Profilkarte
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(22.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = SettingsLightGray
-            ),
-            elevation = CardDefaults.cardElevation(
-                defaultElevation = 0.dp
+            Spacer(
+                Modifier.height(18.dp)
             )
-        ) {
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(20.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
 
-                Box(
-                    modifier = Modifier
-                        .size(56.dp)
-                        .clip(CircleShape)
-                        .then(
-                            Modifier
-                        ),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clip(CircleShape)
-                    ) {
-                        // Hintergrund der Profilfläche
-                    }
+            Text(
+                text =
+                    "Reisegruppe",
 
-                    Icon(
-                        imageVector = Icons.Filled.Person,
-                        contentDescription = null,
-                        tint = SettingsGreenDark,
-                        modifier = Modifier.size(30.dp)
-                    )
-                }
+                style =
+                    MaterialTheme
+                        .typography
+                        .headlineMedium,
 
-                Spacer(modifier = Modifier.size(16.dp))
+                fontWeight =
+                    FontWeight.Bold
+            )
 
-                Column(
-                    modifier = Modifier.weight(1f)
-                ) {
 
-                    Text(
-                        text = "Dein Profil",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = SettingsTextGray
-                    )
-
-                    Spacer(modifier = Modifier.height(2.dp))
-
-                    Text(
-                        text = user?.name?.takeIf {
-                            it.isNotBlank()
-                        } ?: "Kein Name festgelegt",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = Color.Black,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-            }
+            Spacer(
+                Modifier.height(22.dp)
+            )
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
 
-        Text(
-            text = "Konto",
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold
-        )
+        // ========================================================
+        // USER LISTE
+        // ========================================================
 
-        Spacer(modifier = Modifier.height(10.dp))
+        items(
+            items =
+                users,
 
-        // User ändern
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable {
-                    if (user != null && user!!.name.isNotEmpty()) {
-                        userViewModel.updateUser(
-                            User(
-                                id = user!!.id,
-                                name = ""
-                            )
-                        )
-                    }
+            key = {
+                it.id
+            }
+        ) { user ->
+
+            UserCard(
+                user =
+                    user,
+
+                totalTravelCost =
+                    userTravelCosts[user.id]
+                        ?: 0f,
+
+                onDelete = {
+
+                    userToDelete =
+                        user
+                }
+            )
+        }
+
+
+        // ========================================================
+        // ADD BUTTON
+        // ========================================================
+
+        item {
+
+            Spacer(
+                Modifier.height(20.dp)
+            )
+
+
+            Button(
+                onClick = {
+                    showDialog = true
                 },
-            shape = RoundedCornerShape(18.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = Color.White
-            ),
-            elevation = CardDefaults.cardElevation(
-                defaultElevation = 2.dp
-            )
-        ) {
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(18.dp),
-                verticalAlignment = Alignment.CenterVertically
+                modifier =
+                    Modifier.fillMaxWidth(),
+
+                shape =
+                    RoundedCornerShape(
+                        16.dp
+                    ),
+
+                colors =
+                    ButtonDefaults
+                        .buttonColors(
+                            containerColor =
+                                GreenDark
+                        )
             ) {
 
-                Box(
-                    modifier = Modifier
-                        .size(44.dp)
-                        .clip(RoundedCornerShape(13.dp)),
-                    contentAlignment = Alignment.Center
-                ) {
+                Icon(
+                    Icons.Filled.Add,
 
-                    Icon(
-                        imageVector = Icons.Filled.Edit,
-                        contentDescription = null,
-                        tint = SettingsGreenDark,
-                        modifier = Modifier.size(23.dp)
-                    )
-                }
+                    contentDescription =
+                        null
+                )
 
-                Spacer(modifier = Modifier.size(14.dp))
 
-                Column(
-                    modifier = Modifier.weight(1f)
-                ) {
+                Spacer(
+                    Modifier.width(7.dp)
+                )
 
-                    Text(
-                        text = "User ändern",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = Color.Black,
-                        fontWeight = FontWeight.SemiBold
-                    )
 
-                    Spacer(modifier = Modifier.height(2.dp))
-
-                    Text(
-                        text = "Deinen Namen zurücksetzen",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = SettingsTextGray
-                    )
-                }
+                Text(
+                    "Reisebuddy hinzufügen"
+                )
             }
+
+
+            Spacer(
+                Modifier.height(80.dp)
+            )
         }
+    }
 
-        Spacer(modifier = Modifier.height(16.dp))
 
-        // Info
-        Text(
-            text = "Deine persönlichen Daten werden lokal in der App gespeichert.",
-            style = MaterialTheme.typography.bodySmall,
-            color = SettingsTextGray,
-            modifier = Modifier.padding(horizontal = 4.dp)
+    // ============================================================
+    // ADD TRAVELER DIALOG
+    // ============================================================
+
+    if (showDialog) {
+
+        AddTravelerDialog(
+
+            onDismiss = {
+                showDialog = false
+            },
+
+            onAdd = { name ->
+
+                userViewModel.addUser(
+                    name
+                )
+
+                showDialog = false
+            }
         )
     }
+
+
+    // ============================================================
+    // DELETE USER ALERT DIALOG
+    // ============================================================
+
+    if (userToDelete != null) {
+
+        val user =
+            userToDelete!!
+
+
+        AlertDialog(
+            onDismissRequest = {
+
+                userToDelete =
+                    null
+            },
+
+
+            title = {
+
+                Text(
+                    text =
+                        "Reisebuddy löschen?"
+                )
+            },
+
+
+            text = {
+
+                Text(
+                    text =
+                        "Möchtest du „${user.name}“ wirklich löschen?"
+                )
+            },
+
+
+            confirmButton = {
+
+                TextButton(
+                    onClick = {
+
+                        // =========================================
+                        // BESTEHENDE LÖSCH-LOGIK
+                        // =========================================
+
+                        userViewModel
+                            .deleteUser(
+                                user
+                            )
+
+
+                        userToDelete =
+                            null
+                    }
+                ) {
+
+                    Text(
+                        text =
+                            "Löschen",
+
+                        color =
+                            MaterialTheme
+                                .colorScheme
+                                .error
+                    )
+                }
+            },
+
+
+            dismissButton = {
+
+                TextButton(
+                    onClick = {
+
+                        userToDelete =
+                            null
+                    }
+                ) {
+
+                    Text(
+                        text =
+                            "Abbrechen"
+                    )
+                }
+            }
+        )
+    }
+}
+
+
+// =================================================================
+// USER CARD
+// =================================================================
+
+@Composable
+private fun UserCard(
+    user: User,
+    totalTravelCost: Float,
+    onDelete: () -> Unit
+) {
+
+    Card(
+        modifier =
+            Modifier.fillMaxWidth(),
+
+        shape =
+            RoundedCornerShape(
+                20.dp
+            )
+    ) {
+
+        Row(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+
+            verticalAlignment =
+                Alignment.CenterVertically
+        ) {
+
+            // ====================================================
+            // USER ICON
+            // ====================================================
+
+            Surface(
+                modifier =
+                    Modifier.size(
+                        50.dp
+                    ),
+
+                shape =
+                    CircleShape,
+
+                color =
+                    if (user.isMainUser)
+                        Color(0xFFE8F5E9)
+                    else
+                        Color(0xFFE3F2FD)
+            ) {
+
+                Box(
+                    contentAlignment =
+                        Alignment.Center
+                ) {
+
+                    Icon(
+                        imageVector =
+                            Icons.Filled.Person,
+
+                        contentDescription =
+                            null,
+
+                        tint =
+                            if (user.isMainUser)
+                                Green
+                            else
+                                Color(
+                                    0xFF1976D2
+                                )
+                    )
+                }
+            }
+
+
+            Spacer(
+                Modifier.width(14.dp)
+            )
+
+
+            // ====================================================
+            // USER INFORMATION
+            // ====================================================
+
+            Column(
+                modifier =
+                    Modifier.weight(1f)
+            ) {
+
+                Text(
+                    text =
+                        user.name.ifBlank {
+                            "Noch kein Name"
+                        },
+
+                    fontWeight =
+                        FontWeight.Bold
+                )
+
+
+                // =================================================
+                // TATSÄCHLICHER REISEKOSTENANTEIL
+                // =================================================
+
+                Text(
+                    text =
+                        "${formatEuro(totalTravelCost)} € Gesamtausgaben",
+
+                    style =
+                        MaterialTheme
+                            .typography
+                            .bodySmall,
+
+                    color =
+                        MaterialTheme
+                            .colorScheme
+                            .onSurfaceVariant
+                )
+            }
+
+
+            // ====================================================
+            // DELETE BUTTON
+            // ====================================================
+
+            if (!user.isMainUser) {
+
+                IconButton(
+                    onClick =
+                        onDelete
+                ) {
+
+                    Icon(
+                        imageVector =
+                            Icons.Filled.Delete,
+
+                        contentDescription =
+                            "Reisebuddy löschen",
+
+                        tint =
+                            MaterialTheme
+                                .colorScheme
+                                .error
+                    )
+                }
+            }
+        }
+    }
+}
+
+
+// =================================================================
+// ADD TRAVELER
+// =================================================================
+
+@Composable
+private fun AddTravelerDialog(
+    onDismiss: () -> Unit,
+    onAdd: (String) -> Unit
+) {
+
+    var name by remember {
+        mutableStateOf("")
+    }
+
+
+    Dialog(
+        onDismissRequest =
+            onDismiss,
+
+        properties =
+            DialogProperties(
+                dismissOnClickOutside =
+                    true
+            )
+    ) {
+
+        Card(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),
+
+            shape =
+                RoundedCornerShape(
+                    26.dp
+                )
+        ) {
+
+            Column(
+                modifier =
+                    Modifier.padding(
+                        24.dp
+                    )
+            ) {
+
+                Text(
+                    text =
+                        "Reisebuddy hinzufügen",
+
+                    style =
+                        MaterialTheme
+                            .typography
+                            .headlineSmall,
+
+                    fontWeight =
+                        FontWeight.Bold
+                )
+
+
+                Spacer(
+                    Modifier.height(18.dp)
+                )
+
+
+                OutlinedTextField(
+                    value =
+                        name,
+
+                    onValueChange = {
+                        name = it
+                    },
+
+                    modifier =
+                        Modifier.fillMaxWidth(),
+
+                    label = {
+                        Text(
+                            "Name"
+                        )
+                    },
+
+                    singleLine =
+                        true
+                )
+
+
+                Spacer(
+                    Modifier.height(22.dp)
+                )
+
+
+                Row(
+                    modifier =
+                        Modifier.fillMaxWidth(),
+
+                    horizontalArrangement =
+                        Arrangement.End
+                ) {
+
+                    TextButton(
+                        onClick =
+                            onDismiss
+                    ) {
+
+                        Text(
+                            "Abbrechen"
+                        )
+                    }
+
+
+                    Spacer(
+                        Modifier.width(8.dp)
+                    )
+
+
+                    Button(
+                        onClick = {
+
+                            onAdd(
+                                name.trim()
+                            )
+                        },
+
+                        enabled =
+                            name.isNotBlank(),
+
+                        colors =
+                            ButtonDefaults
+                                .buttonColors(
+                                    containerColor =
+                                        GreenDark
+                                )
+                    ) {
+
+                        Text(
+                            "Hinzufügen"
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+// =================================================================
+// FORMAT
+// =================================================================
+
+private fun formatEuro(
+    value: Float
+): String {
+
+    return String.format(
+        Locale.GERMANY,
+        "%.2f",
+        value
+    )
 }

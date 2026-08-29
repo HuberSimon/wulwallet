@@ -5,48 +5,128 @@ import androidx.lifecycle.viewModelScope
 import com.example.wulwallet.data.CategoryRepository
 import com.example.wulwallet.data.local.Category
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class CategoryViewModel(
-    private val repository: CategoryRepository,
+    private val repository: CategoryRepository
 ) : ViewModel() {
 
-    private val _selectedCategory = MutableStateFlow<Category?>(null)
-    val selectedCategory: StateFlow<Category?> = _selectedCategory
+    // ============================================================
+    // ALLE KATEGORIEN
+    // ============================================================
 
-    val allCategories: StateFlow<List<Category>> = repository.allCategories
-        .stateIn(
-            viewModelScope,
-            SharingStarted.Lazily,
-            emptyList()
-        )
+    val categories =
+        repository.getAllCategories()
 
 
-    fun addCategory(category: Category) {
+    // Alias für bestehende Screens
+    val allCategories =
+        categories
+
+
+    // ============================================================
+    // AUSGEWÄHLTE KATEGORIE
+    // ============================================================
+
+    private val _selectedCategory =
+        MutableStateFlow<Category?>(null)
+
+    val selectedCategory: StateFlow<Category?> =
+        _selectedCategory.asStateFlow()
+
+
+    // ============================================================
+    // KATEGORIE LADEN
+    // ============================================================
+
+    fun getCategoryById(
+        id: Int
+    ) {
+
+        viewModelScope.launch {
+
+            _selectedCategory.value =
+                repository.getCategoryById(
+                    id
+                )
+        }
+    }
+
+
+    // ============================================================
+    // KATEGORIE EINFÜGEN
+    // ============================================================
+
+    fun insertCategory(
+        category: Category
+    ) {
+
+        viewModelScope.launch {
+
+            repository.insertCategory(
+                category
+            )
+        }
+    }
+
+
+    // Alias für bestehende Screens
+    fun addCategory(
+        category: Category
+    ) {
+
         viewModelScope.launch {
             repository.insertCategory(category)
         }
     }
 
-    fun updateCategory(category: Category) {
+
+    // ============================================================
+    // KATEGORIE AKTUALISIEREN
+    // ============================================================
+
+    fun updateCategory(
+        category: Category
+    ) {
+
         viewModelScope.launch {
-            repository.updateCategory(category)
+
+            repository.updateCategory(
+                category
+            )
+
+            _selectedCategory.value =
+                repository.getCategoryById(
+                    category.id
+                )
         }
     }
 
-    fun deleteCategory(category: Category) {
-        viewModelScope.launch {
-            repository.deleteCategory(category)
-        }
-    }
 
-    fun getCategoryById(id: Int) {
+    // ============================================================
+    // KATEGORIE LÖSCHEN
+    // ============================================================
+
+    fun deleteCategory(
+        category: Category
+    ) {
+
         viewModelScope.launch {
-            val category = repository.getCategoryById(id)
-            _selectedCategory.value = category
+
+            repository.deleteCategory(
+                category
+            )
+
+            if (
+                _selectedCategory.value?.id ==
+                category.id
+            ) {
+
+                _selectedCategory.value =
+                    null
+            }
         }
     }
 }

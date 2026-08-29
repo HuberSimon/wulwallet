@@ -1,31 +1,51 @@
+// ================================================================
+// FILE: data/UserRepository.kt
+// ================================================================
+
 package com.example.wulwallet.data
 
-import com.example.wulwallet.data.local.UserDao
 import com.example.wulwallet.data.local.User
+import com.example.wulwallet.data.local.UserDao
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.firstOrNull
 
-class UserRepository(private val userDao: UserDao) {
+class UserRepository(
+    private val dao: UserDao
+) {
 
-    val user: Flow<User> = userDao.getUser()
+    val user: Flow<User?> =
+        dao.getMainUser()
+
+    val allUsers: Flow<List<User>> =
+        dao.getAllUsers()
+
+    suspend fun insertUser(
+        user: User
+    ) {
+        dao.insertUser(user)
+    }
+
+    suspend fun updateUser(
+        user: User
+    ) {
+        dao.updateUser(user)
+    }
+
+    suspend fun deleteUser(
+        user: User
+    ) {
+        dao.deleteUser(user)
+    }
 
     suspend fun initializeUser() {
-        val user = userDao.getUser().firstOrNull()
-        if (user == null) {
-            val newUser = User(name = "", totalCosts = 0.0f, mainUser = false)
-            userDao.insertUser(newUser)
+
+        if (dao.getUserCount() == 0) {
+
+            dao.insertUser(
+                User(
+                    name = "",
+                    isMainUser = true
+                )
+            )
         }
-    }
-
-    suspend fun insertUser(user: User) {
-        userDao.insertUser(user)
-    }
-
-    suspend fun updateUser(user: User) {
-        userDao.updateUser(user)
-    }
-
-    suspend fun deleteUser(user: User) {
-        userDao.deleteUser(user)
     }
 }

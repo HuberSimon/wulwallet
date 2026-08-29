@@ -1,3 +1,7 @@
+// ================================================================
+// FILE: ui/TodoViewModel.kt
+// ================================================================
+
 package com.example.wulwallet.ui
 
 import androidx.lifecycle.ViewModel
@@ -10,10 +14,15 @@ class TodoViewModel(
     private val todoRepository: TodoRepository
 ) : ViewModel() {
 
-    val allTodos = todoRepository.allTodos
+    val allTodos =
+        todoRepository.allTodos
 
-    fun addTodo(description: String) {
+    fun addTodo(
+        description: String
+    ) {
+
         viewModelScope.launch {
+
             todoRepository.insertTodo(
                 Todo(
                     description = description,
@@ -23,13 +32,19 @@ class TodoViewModel(
         }
     }
 
-    fun updateTodo(todo: Todo) {
+    fun updateTodo(
+        todo: Todo
+    ) {
+
         viewModelScope.launch {
             todoRepository.updateTodo(todo)
         }
     }
 
-    fun deleteTodo(todo: Todo) {
+    fun deleteTodo(
+        todo: Todo
+    ) {
+
         viewModelScope.launch {
             todoRepository.deleteTodo(todo)
         }

@@ -122,12 +122,6 @@ fun TodoScreen(
                         Spacer(
                             modifier = Modifier.height(4.dp)
                         )
-
-                        Text(
-                            text = "Alles vorbereitet für dein Abenteuer?",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
                     }
 
                     Surface(

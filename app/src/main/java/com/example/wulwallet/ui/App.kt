@@ -1,114 +1,207 @@
+// ================================================================
+// FILE: ui/App.kt
+// ================================================================
+
 package com.example.wulwallet.ui
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.layout.safeDrawingPadding
 import com.example.wulwallet.data.local.User
 
 @Composable
-fun App(userViewModel: UserViewModel, categoryViewModel: CategoryViewModel, costsViewModel: CostsViewModel, todoViewModel: TodoViewModel) {
-    val isInitialized by userViewModel.isInitialized.collectAsState()
+fun App(
+    userViewModel: UserViewModel,
+    categoryViewModel: CategoryViewModel,
+    costsViewModel: CostsViewModel,
+    todoViewModel: TodoViewModel
+) {
 
-    if (!isInitialized) {
-        LoadingScreen()
-    } else {
-        val user = userViewModel.user.collectAsState(initial = null).value
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .safeDrawingPadding()
+    ) {
 
-        if (user == null || user.name.isEmpty()) {
-            userAdd(userViewModel)
+        val initialized by
+        userViewModel
+            .isInitialized
+            .collectAsState()
+
+        if (!initialized) {
+
+            LoadingScreen()
+
         } else {
-                NavGraph(userViewModel, categoryViewModel, costsViewModel, todoViewModel)
+
+            val user by
+            userViewModel
+                .user
+                .collectAsState()
+
+            if (
+                user == null ||
+                user!!.name.isBlank()
+            ) {
+
+                UserAddScreen(
+                    userViewModel
+                )
+
+            } else {
+
+                NavGraph(
+                    userViewModel =
+                        userViewModel,
+
+                    categoryViewModel =
+                        categoryViewModel,
+
+                    costsViewModel =
+                        costsViewModel,
+
+                    todoViewModel =
+                        todoViewModel
+                )
+            }
         }
     }
 }
 
 @Composable
 fun LoadingScreen() {
+
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .wrapContentSize(Alignment.Center)
+        Modifier.fillMaxSize(),
+        contentAlignment =
+            Alignment.Center
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+
+        Column(
+            horizontalAlignment =
+                Alignment.CenterHorizontally
+        ) {
+
             CircularProgressIndicator()
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(text = "Daten werden geladen...")
+
+            Spacer(
+                Modifier.height(16.dp)
+            )
+
+            Text(
+                "Daten werden geladen..."
+            )
         }
     }
 }
 
-
 @Composable
-fun userAdd(userViewModel: UserViewModel) {
-    var showDialog by remember { mutableStateOf(false) }
-    val user by userViewModel.user.collectAsState(initial = null)
-    val userName = user?.name
+private fun UserAddScreen(
+    userViewModel: UserViewModel
+) {
 
-    Column(
-        modifier = Modifier
+    var name by
+    remember { mutableStateOf("") }
+
+    Box(
+        Modifier
             .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+            .padding(24.dp),
+        contentAlignment =
+            Alignment.Center
     ) {
 
-        if (userName == "") {
-            showDialog = true
-        }
+        Card(
+            Modifier.fillMaxWidth(),
+            shape =
+                androidx.compose.foundation.shape
+                    .RoundedCornerShape(28.dp)
+        ) {
 
-        if (showDialog) {
-            NameInputDialog(
-                onDismiss = { showDialog = false },
-                onConfirm = { enteredName ->
-                    userViewModel.updateUser(User(id = user!!.id, name = enteredName))
-                    showDialog = false
+            Column(
+                Modifier.padding(24.dp)
+            ) {
+
+                Text(
+                    "Willkommen bei WulWallet",
+                    style =
+                        MaterialTheme
+                            .typography
+                            .headlineSmall,
+                    fontWeight =
+                        androidx.compose.ui.text.font
+                            .FontWeight.Bold
+                )
+
+                Spacer(
+                    Modifier.height(8.dp)
+                )
+
+                Text(
+                    "Wie heißt du?"
+                )
+
+                Spacer(
+                    Modifier.height(18.dp)
+                )
+
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = {
+                        name = it
+                    },
+                    Modifier.fillMaxWidth(),
+                    label = {
+                        Text("Dein Name")
+                    },
+                    singleLine = true
+                )
+
+                Spacer(
+                    Modifier.height(18.dp)
+                )
+
+                Button(
+                    onClick = {
+
+                        if (
+                            name.isNotBlank()
+                        ) {
+
+                            val current =
+                                userViewModel
+                                    .user
+                                    .value
+
+                            if (current != null) {
+
+                                userViewModel
+                                    .updateUser(
+                                        User(
+                                            id =
+                                                current.id,
+                                            name =
+                                                name.trim(),
+                                            isMainUser =
+                                                true
+                                        )
+                                    )
+                            }
+                        }
+                    },
+                    enabled = name.isNotBlank(),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+
+                    Text(
+                        "Los geht's"
+                    )
                 }
-            )
-        }
-    }
-}
-
-@Composable
-fun NameInputDialog(
-    onDismiss: () -> Unit,
-    onConfirm: (String) -> Unit
-) {
-    var name by remember { mutableStateOf("") }
-
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text("Gib deinen Namen ein") },
-        text = {
-            TextField(
-                value = name,
-                onValueChange = { name = it },
-                label = { Text("Name") }
-            )
-        },
-        confirmButton = {
-            Button(onClick = { onConfirm(name) }) {
-                Text(text = "OK", color = Color.White)
             }
         }
-    )
+    }
 }

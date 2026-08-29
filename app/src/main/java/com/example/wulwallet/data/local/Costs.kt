@@ -1,12 +1,25 @@
+// ================================================================
+// FILE: data/local/Costs.kt
+// ================================================================
+
 package com.example.wulwallet.data.local
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "costs")
+@Entity(
+    tableName = "costs"
+)
 data class Costs(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+
+    @PrimaryKey(
+        autoGenerate = true
+    )
+    val id: Int = 0,
+
     val description: String,
+
     val amount: Float,
+
     val categoryId: Int
 )

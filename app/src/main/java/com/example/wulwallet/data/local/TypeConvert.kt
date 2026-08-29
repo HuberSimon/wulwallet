@@ -1,16 +1,24 @@
+// ================================================================
+// FILE: data/local/TypeConvert.kt
+// ================================================================
+
 package com.example.wulwallet.data.local
 
 import androidx.room.TypeConverter
-import java.util.*
 
 class TypeConvert {
+
     @TypeConverter
-    fun fromTimestamp(value: Long?): Date? {
-        return value?.let { Date(it) }
+    fun fromFloat(
+        value: Float?
+    ): Double? {
+        return value?.toDouble()
     }
 
     @TypeConverter
-    fun dateToTimestamp(date: Date?): Long? {
-        return date?.time
+    fun toFloat(
+        value: Double?
+    ): Float? {
+        return value?.toFloat()
     }
 }
